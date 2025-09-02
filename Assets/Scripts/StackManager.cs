@@ -149,39 +149,61 @@ public class StackManager : MonoBehaviour
     {
         if (activeCubes.Count == 0) return 0;
 
+        // Sort cubes by height to process from bottom to top
         List<StackCube> sortedCubes = new List<StackCube>(activeCubes);
         sortedCubes.Sort((a, b) => a.transform.position.y.CompareTo(b.transform.position.y));
 
+        // Dictionary to track which cubes belong to which stack
         Dictionary<StackCube, int> cubeStackMap = new Dictionary<StackCube, int>();
         List<List<StackCube>> stacks = new List<List<StackCube>>();
-        float stackThreshold = 0.8f;
+
+        float stackThreshold = 0.8f; // How much overlap needed to consider cubes part of same stack
 
         foreach (StackCube cube in sortedCubes)
         {
             bool addedToExistingStack = false;
+            Vector3 cubePos = cube.transform.position;
+            Bounds cubeBounds = new Bounds(cubePos, Vector3.one);
+
+            // Check if this cube can be added to an existing stack
             for (int i = 0; i < stacks.Count; i++)
             {
                 StackCube topCube = stacks[i][stacks[i].Count - 1];
-                if (cube.transform.position.y > topCube.transform.position.y &&
-                    Vector2.Distance(new Vector2(cube.transform.position.x, cube.transform.position.z), new Vector2(topCube.transform.position.x, topCube.transform.position.z)) < stackThreshold)
+                Vector3 topCubePos = topCube.transform.position;
+
+                // Check if this cube is above the top cube of this stack
+                if (cubePos.y > topCubePos.y)
                 {
-                    stacks[i].Add(cube);
-                    addedToExistingStack = true;
-                    break;
+                    // Check if the cubes overlap sufficiently in the XZ plane
+                    Vector2 topPosXZ = new Vector2(topCubePos.x, topCubePos.z);
+                    Vector2 cubePosXZ = new Vector2(cubePos.x, cubePos.z);
+
+                    if (Vector2.Distance(topPosXZ, cubePosXZ) < stackThreshold)
+                    {
+                        stacks[i].Add(cube);
+                        cubeStackMap[cube] = i;
+                        addedToExistingStack = true;
+                        break;
+                    }
                 }
             }
 
+            // If not added to existing stack, create a new stack
             if (!addedToExistingStack)
             {
-                stacks.Add(new List<StackCube> { cube });
+                List<StackCube> newStack = new List<StackCube> { cube };
+                stacks.Add(newStack);
+                cubeStackMap[cube] = stacks.Count - 1;
             }
         }
 
+        // Find the tallest stack
         int tallest = 0;
         foreach (List<StackCube> stack in stacks)
         {
             if (stack.Count > tallest) tallest = stack.Count;
         }
+
         return tallest;
     }
 

@@ -56,6 +56,7 @@ public class SimulationManager : MonoBehaviour
         SceneManager.MoveGameObjectToScene(ground, simScene);
     }
 
+
     public List<StackCube> SnapshotStack(List<StackCube> activeCubes, Pool<StackCube> simCubePool)
     {
         List<StackCube> simObjects = new List<StackCube>();
@@ -154,5 +155,21 @@ public class SimulationManager : MonoBehaviour
         simCubePool.Release(simCube);
 
         return score;
+    }
+
+    public void setsamples(int samples) {
+        candidateSamples = samples;
+    }
+    public void setxstep(float xstep)
+    {
+        candidateXStep = xstep;
+    }
+    public int getsamples()
+    {
+        return candidateSamples;
+    }
+    public float getxstep()
+    {
+        return candidateXStep;
     }
 }
