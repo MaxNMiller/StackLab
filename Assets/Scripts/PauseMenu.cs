@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -22,5 +23,10 @@ public class PauseMenu : MonoBehaviour
     #else
         Application.Quit();                               
     #endif
+    }
+
+    public void ResetLevel()
+    {
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
     }
 }

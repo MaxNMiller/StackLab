@@ -145,6 +145,7 @@ public class StackManager : MonoBehaviour
         return maxY;
     }
 
+    // if you are a huge nerd you can use a spatial hash or KD-Tree here to avoid O(N^2) 
     int ComputeTallestStack()
     {
         if (activeCubes.Count == 0) return 0;
@@ -165,7 +166,7 @@ public class StackManager : MonoBehaviour
             Vector3 cubePos = cube.transform.position;
             Bounds cubeBounds = new Bounds(cubePos, Vector3.one);
 
-            // Check if this cube can be added to an existing stack
+            //Check if this cube can be added to an existing stack
             for (int i = 0; i < stacks.Count; i++)
             {
                 StackCube topCube = stacks[i][stacks[i].Count - 1];
@@ -213,6 +214,8 @@ public class StackManager : MonoBehaviour
         dotPool.Release(obj.transform);
     }
 
+    /*What makes this fun is we are only freezing the cubes that are currently in the main scene,
+    so you must unfreeze to be able to refreeze the new blocks*/
     void ToggleFreezeState()
     {
         freezeSound.Play();

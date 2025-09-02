@@ -1,6 +1,11 @@
 using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Just for fun. Adds the ability to have source-like ragdoll/collision sounds.
+/// Note for future: integrating this with middleware or a central sound manager could be problamatic
+/// </summary>
+
 [RequireComponent(typeof(AudioSource), typeof(Rigidbody))]
 public class PhysicallyBasedImpactSounds : MonoBehaviour
 {
@@ -48,7 +53,6 @@ public class PhysicallyBasedImpactSounds : MonoBehaviour
         audioSource.maxDistance = 20f;
         audioSource.rolloffMode = AudioRolloffMode.Logarithmic;
 
-        // Check if audio clips are assigned
         if (impactSounds == null || impactSounds.Length == 0)
         {
             Debug.LogWarning("No impact sounds assigned to " + gameObject.name, this);
@@ -68,11 +72,9 @@ public class PhysicallyBasedImpactSounds : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        // Check if we have sounds to play
         if (impactSounds == null || impactSounds.Length == 0)
             return;
 
-        // Check if audio source is available
         if (audioSource == null)
             return;
 
@@ -96,11 +98,11 @@ public class PhysicallyBasedImpactSounds : MonoBehaviour
             // Randomize pitch for variety
             float pitch = Random.Range(minPitch, maxPitch);
 
-            // Select a random sound (with additional safety check)
+    
             int randomIndex = Random.Range(0, impactSounds.Length);
             AudioClip selectedClip = impactSounds[randomIndex];
 
-            // Make sure the selected clip isn't null
+            // Safety checks. Most of this debug is leftover from since resolved issues.
             if (selectedClip != null && volume > 0)
             {
                 if (enableDebugging)

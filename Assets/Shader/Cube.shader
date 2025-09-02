@@ -1,3 +1,4 @@
+// A sucessfully strange mix of physically based shading and retro artifacts. I'm not sure why I made this.
 Shader "Custom/Cube"
 {
     Properties
